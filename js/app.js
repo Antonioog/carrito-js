@@ -32,37 +32,63 @@ function leerDatosCurso(curso) {
     id: curso.querySelector("a").getAttribute("data-id"),
     cantidad: 1,
   };
+
+  //Revisa si un elemento ya esta en el carrito...
+  const existe = articulosCarrito.some((curso) => curso.id === infoCurso.id);
+  if (existe) {
+    //Actualizamos la cantidad...
+    const cursos = articulosCarrito.map((curso) => {
+      if (curso.id === infoCurso.id) {
+        curso.cantidad++;
+        return curso; //Retorna el objeto actualizado
+      } else {
+        return curso; //Retorna los objetos que no son los duplicados
+      }
+    });
+    articulosCarrito = [...cursos];
+  } else {
+    articulosCarrito = [...articulosCarrito, infoCurso];
+  }
+
   //Agrega elelmentos al arreglo del carrito...
-  articulosCarrito = [...articulosCarrito, infoCurso];
+
   console.log(articulosCarrito);
   carritoHTML();
-}
 
-//Muestra el carrito de compras en el HTML...
-function carritoHTML() {
-  //Limpiar el html...
-  limpiarHTML();
-  //Recorreo el carrito y genera el html...
-  articulosCarrito.forEach((curso) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
+  //Muestra el carrito de compras en el HTML...
+  function carritoHTML() {
+    //Limpiar el html...
+    limpiarHTML();
+    //Recorreo el carrito y genera el html...
+
+    articulosCarrito.forEach((curso) => {
+      const { imagen, titulo, precio, cantidad, id } = curso;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+    <td>
+       <img src="${imagen}" width="100">
+    </td>
+      <td>${titulo}</td>
+      <td>${precio}</td>
+      <td>${cantidad}</td>
       <td>
-        ${curso.titulo}
+        <a href = "#" class="borrar-curso" data-id="${id}" /> X </td>
       </td>
     `;
 
-    //Agrega el HTML  de nuestro codigo en el tbody...
-    contenedorCarrito.appendChild(row);
-  });
-}
+      //Agrega el HTML  de nuestro codigo en el tbody...
+      contenedorCarrito.appendChild(row);
+    });
+  }
 
-//Eliminar los cursos del tbody...
-function limpiarHTML() {
-  //Forma lento de limpiar el HTML...
-  //contenedorCarrito.innerHTML = "";
+  //Eliminar los cursos del tbody...
+  function limpiarHTML() {
+    //Forma lento de limpiar el HTML...
+    //contenedorCarrito.innerHTML = "";
 
-  //Forma mas efectiva de limpiar el HTML...
-  while (contenedorCarrito.firstChild) {
-    contenedorCarrito.removeChild(contenedorCarrito.firstChild);
+    //Forma mas efectiva de limpiar el HTML...
+    while (contenedorCarrito.firstChild) {
+      contenedorCarrito.removeChild(contenedorCarrito.firstChild);
+    }
   }
 }
